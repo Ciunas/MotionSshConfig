@@ -15,12 +15,11 @@ class MyFirstGuiProgram(Ui_MainWindow):
         mainWindow.setFixedSize(mainWindow.size())
         #self.q_settings(True, "folder_value", None) 
         if self.q_settings(True, "folder_value", None):
-            print("Yes")
             dir_list = os.listdir(self.q_settings(True, "folder_value", None))
         else:
             dir_list = os.listdir(".")
         self.update_list(dir_list)
-        self.pushButton_3.clicked.connect(self.addInputTextToListbox)
+        self.pushButton_3.clicked.connect(self.add_text_listbox)
         self.pushButton.clicked.connect(self.select_folder)
 
 
@@ -46,21 +45,25 @@ class MyFirstGuiProgram(Ui_MainWindow):
             self.update_list(os.listdir(folder))
             return folder
 
-    def addInputTextToListbox(self):
+    def add_text_listbox(self):
         if (self.widget_info()):
             user = "root"
             key = open(os.path.expanduser("~/.ssh/" +
                  self.widget_info())).read()
             server = self.lineEdit.text()
             password = self.lineEdit_2.text()
-            if r"@" in server:
-                split = server.split("@")
-                user = split[0]
-                server = split[1]
+            if server  and password:
+                if r"@" in server:
+                    split = server.split("@")
+                    user = split[0]
+                    server = split[1]
+                else:
+                    QMessageBox.about(self.listWidget,
+                         "Message", "No User, using Root:    ")
+                self.deploy_key(key, server, user, password)
             else:
                 QMessageBox.about(self.listWidget,
-                     "Message", "No User, using Root")
-            self.deploy_key(key, server, user, password)
+                    "Message", "Insert host and password:    ")
 
 
     def widget_info(self):
@@ -69,7 +72,7 @@ class MyFirstGuiProgram(Ui_MainWindow):
             return text
         else:
             QMessageBox.about(self.listWidget,
-                 "Message", "No Key Highlighted")
+                 "Message", "No Key Highlighted:    ")
 
     def deploy_key(self, key, server, username, password):
         try:
@@ -89,8 +92,11 @@ class MyFirstGuiProgram(Ui_MainWindow):
                     '~/.ssh/authorized_keys' % key)
                 client.exec_command('chmod 644 ~/.ssh/authorized_keys')
         except paramiko.AuthenticationException:
-            print("Error")
-
+            QMessageBox.about(self.listWidget,
+               "Message", "Connection Error:    ")
+        except:
+            QMessageBox.about(self.listWidget,
+               "Message", "Connection Error:    ")
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
