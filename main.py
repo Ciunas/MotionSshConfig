@@ -13,7 +13,6 @@ class MyFirstGuiProgram(Ui_MainWindow):
         Ui_MainWindow.__init__(self)
         self.setupUi(mainWindow)
         mainWindow.setFixedSize(mainWindow.size())
-        #self.q_settings(True, "folder_value", None) 
         if self.q_settings(True, "folder_value", None):
             dir_list = os.listdir(self.q_settings(True, "folder_value", None))
         else:
@@ -65,7 +64,6 @@ class MyFirstGuiProgram(Ui_MainWindow):
                 QMessageBox.about(self.listWidget,
                     "Message", "Insert host and password:    ")
 
-
     def widget_info(self):
         if self.listWidget.selectedItems():
             text = self.listWidget.currentItem().text()
@@ -92,7 +90,9 @@ class MyFirstGuiProgram(Ui_MainWindow):
                     '~/.ssh/authorized_keys' % key)
                 client.exec_command('chmod 644 ~/.ssh/authorized_keys')
                 QMessageBox.about(self.listWidget,
-                   "Message", "Connection Error:    ")
+                   "Message", "Key copied:    ")
+                self.lineEdit.clear()
+                self.lineEdit_2.clear()
         except paramiko.AuthenticationException:
             QMessageBox.about(self.listWidget,
                "Message", "Connection Error:    ")
