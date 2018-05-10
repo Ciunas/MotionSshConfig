@@ -91,6 +91,8 @@ class MyFirstGuiProgram(Ui_MainWindow):
                 client.exec_command('echo "%s" >>'
                     '~/.ssh/authorized_keys' % key)
                 client.exec_command('chmod 644 ~/.ssh/authorized_keys')
+                QMessageBox.about(self.listWidget,
+                   "Message", "Connection Error:    ")
         except paramiko.AuthenticationException:
             QMessageBox.about(self.listWidget,
                "Message", "Connection Error:    ")
